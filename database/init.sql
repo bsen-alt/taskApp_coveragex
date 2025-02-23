@@ -1,4 +1,4 @@
-CREATE DATABASE todo_db;
+CREATE DATABASE IF NOT EXISTS todo_db;
 
 USE todo_db;
 
