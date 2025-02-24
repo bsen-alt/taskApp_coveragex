@@ -7,23 +7,23 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: todo_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
-    phpmyadmin:
-      image: phpmyadmin/phpmyadmin
-      restart: always
-      ports:
-        - "8080:80"  # phpMyAdmin will now be accessible at http://localhost:8080
-      environment:
-        PMA_HOST: db
-        MYSQL_ROOT_PASSWORD: root
-      depends_on:
-        - db
+    # phpmyadmin:
+    #   image: phpmyadmin/phpmyadmin
+    #   restart: always
+    #   ports:
+    #     - "8080:80"  # phpMyAdmin will now be accessible at http://localhost:8080
+    #   environment:
+    #     PMA_HOST: db
+    #     MYSQL_ROOT_PASSWORD: root
+    #   depends_on:
+    #     - db
 
   backend:
     build: ./backend
@@ -32,9 +32,9 @@ services:
     depends_on:
       - db
     environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASS: password
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASS: 
       DB_NAME: todo_db
 
   frontend:

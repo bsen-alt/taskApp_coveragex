@@ -19,7 +19,17 @@ const TaskModel = {
   async markTaskAsDone(id) {
     await pool.query('UPDATE task SET is_completed = TRUE WHERE id = ?', [id]);
     return { message: 'Task marked as done' };
+  },
+
+  async getTasks(search = '') {
+    const query = search
+      ? 'SELECT * FROM task WHERE title LIKE ? AND is_completed = FALSE ORDER BY created_at DESC LIMIT 5'
+      : 'SELECT * FROM task WHERE is_completed = FALSE ORDER BY created_at DESC LIMIT 5';
+  
+    const [rows] = await pool.query(query, [`%${search}%`]);
+    return rows;
   }
+  
 };
 
 module.exports = TaskModel;

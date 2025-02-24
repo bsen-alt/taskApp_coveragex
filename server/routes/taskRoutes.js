@@ -63,4 +63,12 @@ router.get('/', TaskController.getLatestTasks);
  */
 router.patch('/:id/done', TaskController.markTaskAsDone);
 
+
+router.get('/', async (req, res) => {
+    const { search } = req.query; // Get search query
+    const tasks = await TaskModel.getTasks(search);
+    res.json(tasks);
+  });
+  
+
 module.exports = router;
