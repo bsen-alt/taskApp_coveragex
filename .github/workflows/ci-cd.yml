@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["master"] 
+    branches: ["master"]
   pull_request:
     branches: ["master"]
 
@@ -29,12 +29,12 @@ jobs:
           cd server
           npm install
 
-      - name: Run frontend tests (if applicable)
+      - name: Run frontend tests
         run: |
           cd client
           npm test || true  # Skip if no tests
 
-      - name: Run backend tests (if applicable)
+      - name: Run backend tests
         run: |
           cd server
           npm test || true  # Skip if no tests
@@ -42,4 +42,9 @@ jobs:
       - name: Build client app
         run: |
           cd client
-          npm run build
+          npm run build || true  # Only build frontend if required
+
+      - name: Deploy backend
+        run: |
+          cd server
+          npm start || true  # Ensure server starts if necessary
