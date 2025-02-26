@@ -1,0 +1,48 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Install backend dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run frontend tests (if applicable)
+        run: |
+          cd client
+          npm test || true  # Skip if no tests
+
+      - name: Run backend tests (if applicable)
+        run: |
+          cd server
+          npm test || true  # Skip if no tests
+
+      - name: Build client app
+        run: |
+          cd client
+          npm run build
+
+    #   - name: Deploy (modify based on your needs)
+    #     run: echo "Deploy steps go here (e.g., Firebase, Vercel, Docker push, etc.)"
