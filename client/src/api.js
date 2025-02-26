@@ -25,9 +25,11 @@ export const markTaskAsDone = async (id) => {
 };
 
 export const deleteTask = async (id) => {
+  console.log("Deleting task with ID:", id);  // Debugging log
   const response = await API.delete(`/${id}`);
   return response.data;
 };
+
 
 
 

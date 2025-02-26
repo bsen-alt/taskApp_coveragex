@@ -50,15 +50,48 @@ const TaskController = {
     }
   },
 
+  // async deleteTask(req, res) {
+  //   try {
+  //     const { id } = req.params;
+  //     console.log(`Delete request received for task ID: ${id}`); // Log the received ID
+
+  //     const task = await TaskModel.getTaskById(id); // Create a function to fetch the task
+  //     if (!task) {
+  //       console.log(`Task with ID ${id} not found`); // Log if task is not found
+  //       return res.status(404).json({ error: 'Task not found' });
+  //     }
+  
+  //     await TaskModel.deleteTask(id);
+  //     console.log(`Task with ID ${id} deleted successfully`); // Log after task is deleted
+  //     res.json({ message: 'Task deleted' });
+
+  //   } catch (error) {
+  //     console.error('Error in deleteTask:', error); // Log errors
+  //     res.status(500).json({ error: 'Server error' });
+  //   }
+  // },
+
   async deleteTask(req, res) {
     try {
       const { id } = req.params;
+      console.log(`🗑️ Delete request received for task ID: ${id}`);
+  
+      const task = await TaskModel.getTaskById(id);
+      if (!task) {
+        console.log(`❌ Task with ID ${id} not found`);
+        return res.status(404).json({ error: 'Task not found' });
+      }
+  
       await TaskModel.deleteTask(id);
+      console.log(`✅ Task with ID ${id} deleted successfully`);
       res.json({ message: 'Task deleted' });
     } catch (error) {
+      console.error('🔥 Error in deleteTask:', error);
       res.status(500).json({ error: 'Server error' });
     }
   },
+  
+  
 
   async unHoldTask(req, res) {
     try {

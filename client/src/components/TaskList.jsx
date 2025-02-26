@@ -14,6 +14,8 @@ export default function TaskList({ tasks: propTasks }) {
   const [selectedTask, setSelectedTask] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedDescription, setUpdatedDescription] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 400);
@@ -39,8 +41,15 @@ export default function TaskList({ tasks: propTasks }) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteTask,
-    onSuccess: () => queryClient.invalidateQueries(["tasks"]),
+    mutationFn: (id) => deleteTask(id),
+    onSuccess: (_, id) => {
+      console.log("Attempting deletion and mutation success:", id);
+      queryClient.invalidateQueries(["tasks"]);
+      console.log("Task deleted successfully");
+    },
+    onError: (error, id) => {
+      console.error("❌ Error deleting task:", id, error);
+    },
   });
 
   const updateTaskMutation = useMutation({
@@ -75,10 +84,27 @@ export default function TaskList({ tasks: propTasks }) {
     updateTaskMutation.mutate(updatedTask);
   };
 
+  const handleDeleteClick = (task) => {
+    setTaskToDelete(task);
+    setIsDeleteModalOpen(true);
+  };
+
   const handleDelete = (id) => {
+    console.log("Attempting to delete task with ID:", id); // Log the task ID
     if (window.confirm("Are you sure you want to delete this task?")) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handleConfirmDelete = () => {
+    if (!taskToDelete) return;
+
+    deleteMutation.mutate(taskToDelete.id, {
+      onSuccess: () => {
+        setIsDeleteModalOpen(false);
+        setTaskToDelete(null);
+      },
+    });
   };
 
   useEffect(() => {
@@ -139,7 +165,7 @@ export default function TaskList({ tasks: propTasks }) {
             </button>
             <button
               className="p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-sm transition focus:ring-2 focus:ring-red-400"
-              onClick={() => handleDelete(task.id)}
+              onClick={() => handleDeleteClick(task)}
               title="Delete Task"
             >
               <Trash2 size={16} />
@@ -218,11 +244,11 @@ export default function TaskList({ tasks: propTasks }) {
       {isEditModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          onClick={() => setIsEditModalOpen(false)} // Close modal when clicking outside
+          onClick={() => setIsEditModalOpen(false)}
         >
           <div
             className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-96 relative"
-            onClick={(e) => e.stopPropagation()} // Prevent modal closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
               Edit Task
@@ -274,6 +300,34 @@ export default function TaskList({ tasks: propTasks }) {
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md focus:ring-2 focus:ring-blue-400"
               >
                 Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setIsDeleteModalOpen(false)}
+        >
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-sm font-semibold">Confirm Delete</h2>
+            <p className="text-gray-600 text-xs">
+              Are you sure you want to delete "{taskToDelete?.title}"?
+            </p>
+            <div className="flex justify-end space-x-3 mt-4">
+              <button
+                className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={handleConfirmDelete}
+              >
+                Delete
               </button>
             </div>
           </div>

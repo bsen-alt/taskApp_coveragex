@@ -1,6 +1,11 @@
 const pool = require('../config/db');
 
 const TaskModel = {
+  async getTaskById(id) {
+    const [rows] = await pool.query('SELECT * FROM task WHERE id = ?', [id]);
+    return rows.length ? rows[0] : null;
+  },
+  
   async createTask(title, description) {
     const [result] = await pool.query(
       'INSERT INTO task (title, description) VALUES (?, ?)',
@@ -46,12 +51,21 @@ const TaskModel = {
   },
 
   async deleteTask(id) {
-    await pool.query(
-      'DELETE FROM task WHERE id = ? AND status_id IN (1, 2)', // 1 is To-Do, 2 is Hold
+    console.log(`🗑️ Deleting from DB, ID: ${id}`);
+    const [result] = await pool.query(
+      'DELETE FROM task WHERE id = ? AND status_id IN (1, 2)', // Only To-Do and Hold tasks
       [id]
     );
+  
+    if (result.affectedRows === 0) {
+      throw new Error(`Task ID ${id} not found or cannot be deleted`);
+    }
+  
+    console.log(`✅ Task with ID ${id} deleted`);
     return { message: 'Task deleted' };
   },
+  
+  
 
   async unHoldTask(id) {
     await pool.query('UPDATE task SET status_id = 1 WHERE id = ? AND status_id = 2', [id]); // 1 is To-Do, 2 is Hold
