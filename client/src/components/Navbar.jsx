@@ -25,12 +25,12 @@ export default function Navbar({ setView, currentView }) {
       {/* Right - Dark Mode Toggle */}
       <button
         onClick={() => setDarkMode(!darkMode)}
-        className="p-2 rounded-lg bg-gray-200  hover:bg-gray-300  transition"
+        className="p-2 rounded-lg bg-surface-dark border border-border-dark hover:bg-background-dark  transition"
       >
         {darkMode ? (
           <Sun className="text-yellow-400" size={16} />
         ) : (
-          <Moon className="text-gray-600" size={16} />
+          <Moon className="text-border-light" size={16} />
         )}
       </button>
     </nav>

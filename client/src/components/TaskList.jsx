@@ -224,18 +224,34 @@ export default function TaskList({ tasks: propTasks }) {
         key={task.id}
         className={`flex border items-center justify-between px-4 py-3 rounded-lg shadow-sm transition hover:scale-[102%] duration-300 ${
           task.status_id === 2
-            ? "bg-yellow-100 dark:bg-yellow-800"
+            ? "bg-hold-task-light dark:bg-hold-task-dark"
             : task.status_id === 3
-            ? "bg-green-100 dark:bg-green-700"
-            : "bg-gray-50 dark:bg-gray-900"
+            ? "bg-completed-task-light dark:bg-completed-task-dark"
+            : "bg-background-light dark:bg-surface-dark"
         }`}
       >
         {/* Task Details */}
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+          <h3
+            className={`text-sm font-semibold text-primary-light dark:text-white truncate ${
+              task.status_id === 2
+                ? "text-text-primary-light dark:text-text-primary-light"
+                : task.status_id === 3
+                ? "text-text-primary-light dark:text-text-primary-light"
+                : ""
+            }`}
+          >
             {task.title}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+          <p
+            className={`text-xs text-secondary-light dark:text-gray-400 truncate ${
+              task.status_id === 2
+                ? "text-text-secondary-light dark:text-text-secondary-light"
+                : task.status_id === 3
+                ? "text-text-secondary-light dark:text-text-secondary-light"
+                : ""
+            }`}
+          >
             {task.description}
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500">
@@ -253,14 +269,14 @@ export default function TaskList({ tasks: propTasks }) {
   };
 
   return (
-    <div className="p-4 w-full mx-auto dark:bg-gray-800 rounded-lg">
+    <div className="p-4 w-full mx-auto  rounded-lg">
       {/* Search Input */}
       <input
         type="text"
         placeholder="Search tasks..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+        className="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-surface-dark text-secondary-light dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
       />
 
       {/* Show Skeleton While Loading */}
@@ -289,7 +305,7 @@ export default function TaskList({ tasks: propTasks }) {
           onClick={() => setIsEditModalOpen(false)}
         >
           <div
-            className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-96 relative"
+            className="bg-white dark:bg-surface-dark p-8 rounded-lg shadow-lg w-96 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
@@ -309,7 +325,7 @@ export default function TaskList({ tasks: propTasks }) {
                 type="text"
                 value={updatedTitle}
                 onChange={(e) => setUpdatedTitle(e.target.value)}
-                className="w-full px-4 py-2 mt-2 text-sm bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 mt-2 text-sm bg-gray-100 dark:bg-background-dark text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
 
@@ -325,7 +341,7 @@ export default function TaskList({ tasks: propTasks }) {
                 id="description"
                 value={updatedDescription}
                 onChange={(e) => setUpdatedDescription(e.target.value)}
-                className="w-full h-32 px-4 py-2 mt-2 text-sm bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                className="w-full h-32 px-4 py-2 mt-2 text-sm bg-gray-100 dark:bg-background-dark text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
               />
             </div>
 
@@ -350,12 +366,17 @@ export default function TaskList({ tasks: propTasks }) {
 
       {isDeleteModalOpen && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
           onClick={() => setIsDeleteModalOpen(false)}
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-sm font-semibold">Confirm Delete</h2>
-            <p className="text-gray-600 text-xs">
+          <div
+            className="bg-white dark:bg-surface-dark p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-sm font-semibold dark:text-text-primary-dark">
+              Confirm Delete
+            </h2>
+            <p className="text-gray-600 dark:text-secondary-dark text-xs">
               Are you sure you want to delete "{taskToDelete?.title}"?
             </p>
             <div className="flex justify-end space-x-3 mt-4">
