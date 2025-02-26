@@ -43,6 +43,3 @@ jobs:
         run: |
           cd client
           npm run build
-
-    #   - name: Deploy (modify based on your needs)
-    #     run: echo "Deploy steps go here (e.g., Firebase, Vercel, Docker push, etc.)"

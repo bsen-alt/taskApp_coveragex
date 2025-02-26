@@ -19,14 +19,25 @@ const TaskController = {
     }
   },
 
-  async getLatestTasks(req, res) {
-    const tasks = await TaskModel.getLatestTasks();
-    res.json(tasks);
-  },
+  async getTasks(req, res) {
+    try {
+      const { search } = req.query;
+      console.log("🔍 Search Query Received:", search); // Debugging log
+      const tasks = await TaskModel.getTasks(search);
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+  ,
 
   async markTaskAsDone(req, res) {
-    await TaskModel.markTaskAsDone(req.params.id);
-    res.json({ message: 'Task marked as done' });
+    try {
+      await TaskModel.markTaskAsDone(req.params.id);
+      res.json({ message: 'Task marked as done' });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
   }
 };
 

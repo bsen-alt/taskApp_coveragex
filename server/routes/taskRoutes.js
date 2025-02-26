@@ -40,7 +40,7 @@ router.post('/', TaskController.createTask);
  *       200:
  *         description: A list of tasks
  */
-router.get('/', TaskController.getLatestTasks);
+router.get('/', TaskController.getTasks);
 
 /**
  * @swagger
@@ -62,13 +62,19 @@ router.get('/', TaskController.getLatestTasks);
  *         description: Task not found
  */
 router.patch('/:id/done', TaskController.markTaskAsDone);
+  
 
-
-router.get('/', async (req, res) => {
-    const { search } = req.query; // Get search query
-    const tasks = await TaskModel.getTasks(search);
-    res.json(tasks);
+router.patch("/:id/status", async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+      await TaskModel.updateTaskStatus(id, status);
+      res.json({ message: "Task status updated" });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
   });
+  
   
 
 module.exports = router;
