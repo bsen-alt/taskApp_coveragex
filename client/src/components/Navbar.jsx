@@ -28,9 +28,9 @@ export default function Navbar({ setView, currentView }) {
         className="p-2 rounded-lg bg-gray-200  hover:bg-gray-300  transition"
       >
         {darkMode ? (
-          <Sun className="text-yellow-400" />
+          <Sun className="text-yellow-400" size={16} />
         ) : (
-          <Moon className="text-gray-600" />
+          <Moon className="text-gray-600" size={16} />
         )}
       </button>
     </nav>

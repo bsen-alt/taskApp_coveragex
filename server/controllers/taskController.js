@@ -28,8 +28,7 @@ const TaskController = {
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
     }
-  }
-  ,
+  },
 
   async markTaskAsDone(req, res) {
     try {
@@ -38,7 +37,41 @@ const TaskController = {
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
     }
+  },
+
+  async updateTask(req, res) {
+    try {
+      const { id } = req.params;
+      const { title, description } = req.body;
+      await TaskModel.updateTask(id, title, description);
+      res.json({ message: 'Task updated' });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  },
+
+  async deleteTask(req, res) {
+    try {
+      const { id } = req.params;
+      await TaskModel.deleteTask(id);
+      res.json({ message: 'Task deleted' });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  },
+
+  async unHoldTask(req, res) {
+    try {
+      const { id } = req.params;
+      await TaskModel.unHoldTask(id);
+      res.json({ message: 'Task unheld and moved to To-Do' });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
   }
+  
+  
+  
 };
 
 module.exports = TaskController;

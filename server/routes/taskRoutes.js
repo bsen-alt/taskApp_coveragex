@@ -62,19 +62,58 @@ router.get('/', TaskController.getTasks);
  *         description: Task not found
  */
 router.patch('/:id/done', TaskController.markTaskAsDone);
-  
 
-router.patch("/:id/status", async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    try {
-      await TaskModel.updateTaskStatus(id, status);
-      res.json({ message: "Task status updated" });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
-    }
-  });
-  
-  
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   put:
+ *     summary: Update a task
+ *     description: Updates a task's title and description.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Task updated successfully
+ *       400:
+ *         description: Bad request
+ */
+router.put('/:id', TaskController.updateTask);
+
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   delete:
+ *     summary: Delete a task
+ *     description: Deletes the task with the specified ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Task deleted successfully
+ *       404:
+ *         description: Task not found
+ */
+router.delete('/:id', TaskController.deleteTask);
 
 module.exports = router;
