@@ -44,7 +44,7 @@ jobs:
           cd client
           npm run build || true  # Only build frontend if required
 
-      - name: Deploy backend
-        run: |
-          cd server
-          npm start || true  # Ensure server starts if necessary
+      # - name: Deploy backend
+      #   run: |
+      #     cd server
+      #     npm start || true  # Ensure server starts if necessary
