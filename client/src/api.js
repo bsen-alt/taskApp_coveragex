@@ -30,6 +30,11 @@ export const deleteTask = async (id) => {
   return response.data;
 };
 
+export const updateTaskStatus = async (id, status_id) => {
+  console.log("Holding/UnHolding task with ID:", id);  // Debugging log
+  const response = await API.patch(`/${id}/status`, { status_id });
+  return response.data;
+};
 
 
 

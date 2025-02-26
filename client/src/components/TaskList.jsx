@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, markTaskAsDone, updateTask, deleteTask } from "../api";
+import {
+  getTasks,
+  markTaskAsDone,
+  updateTask,
+  deleteTask,
+  updateTaskStatus,
+} from "../api";
 import { format } from "date-fns";
 import { CheckCircle, PauseCircle, Undo2, Edit, Trash2 } from "lucide-react";
 import SkeletonTask from "./SkeletonTask";
@@ -60,6 +66,28 @@ export default function TaskList({ tasks: propTasks }) {
     },
   });
 
+  const holdTaskMutation = useMutation({
+    mutationFn: (id) => updateTaskStatus(id, 2), // 2 = Hold status
+    onSuccess: (data) => {
+      console.log("Task held successfully:", data);
+      queryClient.invalidateQueries(["tasks"]);
+    },
+    onError: (error) => {
+      console.error("Error holding task:", error);
+    },
+  });
+
+  const unholdTaskMutation = useMutation({
+    mutationFn: (id) => updateTaskStatus(id, 1), // 1 = To-Do status
+    onSuccess: (data) => {
+      console.log("Task unheld successfully:", data);
+      queryClient.invalidateQueries(["tasks"]);
+    },
+    onError: (error) => {
+      console.error("Error unholding task:", error);
+    },
+  });
+
   const handleEditClick = (task) => {
     setSelectedTask(task);
     setUpdatedTitle(task.title);
@@ -107,6 +135,24 @@ export default function TaskList({ tasks: propTasks }) {
     });
   };
 
+  const handleHoldTask = (task) => {
+    console.log("Hold Task clicked", task); // Log the full task object
+    if (task.id) {
+      holdTaskMutation.mutate(task.id); // Trigger mutation for holding the task
+    } else {
+      console.error("Task ID is missing!");
+    }
+  };
+
+  const handleUnholdTask = (task) => {
+    console.log("Unhold Task clicked", task); // Log the full task object
+    if (task.id) {
+      unholdTaskMutation.mutate(task.id); // Trigger mutation for unholding the task
+    } else {
+      console.error("Task ID is missing!");
+    }
+  };
+
   useEffect(() => {
     let delay;
     if (!isLoading) {
@@ -133,9 +179,7 @@ export default function TaskList({ tasks: propTasks }) {
         {task.status_id === 1 && (
           <button
             className="p-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md shadow-sm transition focus:ring-2 focus:ring-yellow-400"
-            onClick={() =>
-              updateStatusMutation.mutate([task.id, { status_id: 2 }])
-            }
+            onClick={() => handleHoldTask(task)}
             title="Hold Task"
           >
             <PauseCircle size={16} />
@@ -145,9 +189,7 @@ export default function TaskList({ tasks: propTasks }) {
         {task.status_id === 2 && (
           <button
             className="p-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow-sm transition focus:ring-2 focus:ring-blue-400"
-            onClick={() =>
-              updateStatusMutation.mutate([task.id, { status_id: 1 }])
-            }
+            onClick={() => handleUnholdTask(task)}
             title="Unhold Task"
           >
             <Undo2 size={16} />
@@ -180,12 +222,12 @@ export default function TaskList({ tasks: propTasks }) {
     return (
       <div
         key={task.id}
-        className={`flex items-center justify-between px-4 py-3 rounded-lg shadow-sm transition hover:scale-[102%] duration-300 ${
+        className={`flex border items-center justify-between px-4 py-3 rounded-lg shadow-sm transition hover:scale-[102%] duration-300 ${
           task.status_id === 2
             ? "bg-yellow-100 dark:bg-yellow-800"
             : task.status_id === 3
             ? "bg-green-100 dark:bg-green-700"
-            : "bg-gray-50 dark:bg-gray-800"
+            : "bg-gray-50 dark:bg-gray-900"
         }`}
       >
         {/* Task Details */}
@@ -211,7 +253,7 @@ export default function TaskList({ tasks: propTasks }) {
   };
 
   return (
-    <div className="p-4 w-full mx-auto dark:bg-gray-900 rounded-lg">
+    <div className="p-4 w-full mx-auto dark:bg-gray-800 rounded-lg">
       {/* Search Input */}
       <input
         type="text"

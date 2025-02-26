@@ -50,27 +50,6 @@ const TaskController = {
     }
   },
 
-  // async deleteTask(req, res) {
-  //   try {
-  //     const { id } = req.params;
-  //     console.log(`Delete request received for task ID: ${id}`); // Log the received ID
-
-  //     const task = await TaskModel.getTaskById(id); // Create a function to fetch the task
-  //     if (!task) {
-  //       console.log(`Task with ID ${id} not found`); // Log if task is not found
-  //       return res.status(404).json({ error: 'Task not found' });
-  //     }
-  
-  //     await TaskModel.deleteTask(id);
-  //     console.log(`Task with ID ${id} deleted successfully`); // Log after task is deleted
-  //     res.json({ message: 'Task deleted' });
-
-  //   } catch (error) {
-  //     console.error('Error in deleteTask:', error); // Log errors
-  //     res.status(500).json({ error: 'Server error' });
-  //   }
-  // },
-
   async deleteTask(req, res) {
     try {
       const { id } = req.params;
@@ -91,17 +70,27 @@ const TaskController = {
     }
   },
   
-  
-
-  async unHoldTask(req, res) {
+  async updateTaskStatus(req, res) {
     try {
       const { id } = req.params;
-      await TaskModel.unHoldTask(id);
-      res.json({ message: 'Task unheld and moved to To-Do' });
+      const { status_id } = req.body;
+      console.log(`Received update request for task ID: ${id}, Status ID: ${status_id}`);
+
+      if (!id) {
+        console.error("Error: ID is undefined");
+        return res.status(400).json({ error: "Task ID is missing" });
+      }
+
+      await TaskModel.updateTaskStatus(id, status_id);
+      console.log(`✅ Task with ID ${id} STATUS CHANGED successfully`);
+      res.json({ message: "Task status updated successfully" });
+
     } catch (error) {
+      console.error('Error in updateTaskStatus:', error);
       res.status(500).json({ error: 'Server error' });
     }
   }
+  
   
   
   

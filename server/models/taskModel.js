@@ -5,7 +5,7 @@ const TaskModel = {
     const [rows] = await pool.query('SELECT * FROM task WHERE id = ?', [id]);
     return rows.length ? rows[0] : null;
   },
-  
+
   async createTask(title, description) {
     const [result] = await pool.query(
       'INSERT INTO task (title, description) VALUES (?, ?)',
@@ -65,16 +65,19 @@ const TaskModel = {
     return { message: 'Task deleted' };
   },
   
+  async updateTaskStatus(id, status_id) {
+    await pool.query(
+      "UPDATE task SET status_id = ? WHERE id = ?",
+      [status_id, id]
+    );
+    return { message: 'Task status updated successfully' };
+  },
   
+  // async unHoldTask(id) {
+  //   await pool.query('UPDATE task SET status_id = 1 WHERE id = ? AND status_id = 2', [id]); // 1 is To-Do, 2 is Hold
+  //   return { message: 'Task unheld and moved to To-Do' };
+  // }
 
-  async unHoldTask(id) {
-    await pool.query('UPDATE task SET status_id = 1 WHERE id = ? AND status_id = 2', [id]); // 1 is To-Do, 2 is Hold
-    return { message: 'Task unheld and moved to To-Do' };
-  }
-  
-  
-  
-  
 };
 
 module.exports = TaskModel;

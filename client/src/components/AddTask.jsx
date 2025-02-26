@@ -23,15 +23,15 @@ export default function AddTask() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4">
+    <form onSubmit={handleSubmit} className="space-y-4 pt-4">
       <input
-        className="border p-2 rounded w-full text-black"
+        className="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Task Title"
       />
       <input
-        className="border p-2 rounded w-full mt-2 text-black"
+        className="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Task Description"

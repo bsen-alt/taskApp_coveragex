@@ -116,4 +116,37 @@ router.put('/:id', TaskController.updateTask);
  */
 router.delete('/:id', TaskController.deleteTask);
 
+/**
+ * @swagger
+ * /tasks/{id}/status:
+ *   patch:
+ *     summary: Update task status
+ *     description: Updates the status of a task (e.g., move to Hold or back to To-Do).
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status_id:
+ *                 type: integer
+ *                 example: 2
+ *     responses:
+ *       200:
+ *         description: Task status updated successfully
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Task not found
+ */
+router.patch('/:id/status', TaskController.updateTaskStatus);
+
 module.exports = router;
