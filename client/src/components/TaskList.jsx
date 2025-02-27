@@ -222,7 +222,7 @@ export default function TaskList({ tasks: propTasks }) {
     return (
       <div
         key={task.id}
-        className={`flex border items-center justify-between px-4 py-3 rounded-lg shadow-sm transition hover:scale-[102%] duration-300 ${
+        className={`flex flex-col md:flex-col lg:flex-col border items-start justify-between gap-2 px-4 py-3 rounded-lg shadow-sm transition hover:scale-[102%] duration-300 w-full ${
           task.status_id === 2
             ? "bg-hold-task-light dark:bg-hold-task-dark"
             : task.status_id === 3
@@ -231,20 +231,20 @@ export default function TaskList({ tasks: propTasks }) {
         }`}
       >
         {/* Task Details */}
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <h3
-            className={`text-sm font-semibold text-primary-light dark:text-white truncate ${
+            className={`text-sm font-semibold text-text-primary-light dark:text-text-primary-dark truncate ${
               task.status_id === 2
                 ? "text-text-primary-light dark:text-text-primary-light"
                 : task.status_id === 3
                 ? "text-text-primary-light dark:text-text-primary-light"
-                : ""
+                : "dark:text-text-primary-dark"
             }`}
           >
             {task.title}
           </h3>
           <p
-            className={`text-xs text-secondary-light dark:text-gray-400 truncate ${
+            className={`text-xs text-text-secondary-light dark:text-text-secondary-light truncate ${
               task.status_id === 2
                 ? "text-text-secondary-light dark:text-text-secondary-light"
                 : task.status_id === 3
@@ -263,13 +263,15 @@ export default function TaskList({ tasks: propTasks }) {
         </div>
 
         {/* Task Action Buttons */}
-        {renderTaskActionButtons(task)}
+        <div className="flex flex-wrap items-center justify-end lg:justify-start space-x-2 w-full md:w-auto">
+          {renderTaskActionButtons(task)}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="p-4 w-full mx-auto  rounded-lg">
+    <div className="p-4 w-full max-w-lg md:max-w-2xl lg:max-w-4xl h-fit mx-auto rounded-lg">
       {/* Search Input */}
       <input
         type="text"
@@ -301,14 +303,14 @@ export default function TaskList({ tasks: propTasks }) {
       {/* Edit Task Modal */}
       {isEditModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center p-4"
           onClick={() => setIsEditModalOpen(false)}
         >
           <div
-            className="bg-white dark:bg-surface-dark p-8 rounded-lg shadow-lg w-96 relative"
+            className="bg-white dark:bg-surface-dark p-6 rounded-lg shadow-lg w-11/12 sm:w-96 relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Edit Task
             </h3>
 
@@ -346,16 +348,16 @@ export default function TaskList({ tasks: propTasks }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-6 flex justify-end space-x-4">
+            <div className="mt-4 flex justify-end space-x-3">
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md focus:ring-2 focus:ring-gray-400"
+                className="px-4 py-2 text-sm bg-gray-300 hover:bg-gray-400 rounded-md focus:ring-2 focus:ring-gray-400"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateTask}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md focus:ring-2 focus:ring-blue-400"
+                className="px-4 py-2 text-sm bg-primary-button-light dark:bg-primary-button-dark hover:bg-primary-button-light/80 text-white rounded-md focus:ring-2 focus:ring-blue-400"
               >
                 Save Changes
               </button>
@@ -364,19 +366,20 @@ export default function TaskList({ tasks: propTasks }) {
         </div>
       )}
 
+      {/* Delete Task Modal */}
       {isDeleteModalOpen && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 p-4"
           onClick={() => setIsDeleteModalOpen(false)}
         >
           <div
-            className="bg-white dark:bg-surface-dark p-6 rounded-lg shadow-lg"
+            className="bg-white dark:bg-surface-dark p-6 rounded-lg shadow-lg w-11/12 max-w-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-sm font-semibold dark:text-text-primary-dark">
+            <h2 className="text-lg font-semibold dark:text-text-primary-dark">
               Confirm Delete
             </h2>
-            <p className="text-gray-600 dark:text-secondary-dark text-xs">
+            <p className="text-gray-600 dark:text-secondary-dark text-sm mt-2">
               Are you sure you want to delete "{taskToDelete?.title}"?
             </p>
             <div className="flex justify-end space-x-3 mt-4">
