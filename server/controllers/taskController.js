@@ -13,7 +13,7 @@ const TaskController = {
       // Validate input data
       const validatedData = taskSchema.parse(req.body);
       const statusId = validatedData.status_id || 1;
-      const task = await TaskModel.createTask(validatedData.title, validatedData.description, statusId);
+      const task = await TaskModel.createTask(validatedData.title, validatedData.description);
       res.status(201).json(task);
     } catch (error) {
       console.error("Validation error:", error);

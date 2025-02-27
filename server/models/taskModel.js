@@ -9,7 +9,7 @@ const TaskModel = {
   async createTask(title, description,status_id = 1) {
     const [result] = await pool.query(
       'INSERT INTO task (title, description,status_id) VALUES (?, ?)',
-      [title, description]
+      [title, description,status_id]
     );
     return { id: result.insertId, title, description, status_id };
   },
