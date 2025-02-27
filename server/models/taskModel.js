@@ -6,12 +6,12 @@ const TaskModel = {
     return rows.length ? rows[0] : null;
   },
 
-  async createTask(title, description) {
+  async createTask(title, description,status_id = 1) {
     const [result] = await pool.query(
-      'INSERT INTO task (title, description) VALUES (?, ?)',
+      'INSERT INTO task (title, description,status_id) VALUES (?, ?)',
       [title, description]
     );
-    return { id: result.insertId, title, description };
+    return { id: result.insertId, title, description, status_id };
   },
 
   async markTaskAsDone(id) {
