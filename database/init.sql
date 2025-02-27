@@ -7,7 +7,7 @@ CREATE TABLE
     IF NOT EXISTS task_status (
         id INT AUTO_INCREMENT PRIMARY KEY,
         status_name VARCHAR(50) NOT NULL UNIQUE
-    );
+    ) ENGINE = InnoDB;
 
 -- creating task table with status_id as foreign key
 CREATE TABLE
@@ -18,9 +18,9 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status_id INT NOT NULL,
         FOREIGN KEY (status_id) REFERENCES task_status (id) ON DELETE CASCADE
-    );
+    ) ENGINE = InnoDB;
 
---inserting default task statuses
+-- inserting default task statuses
 INSERT INTO
     task_status (status_name)
 VALUES
