@@ -188,6 +188,7 @@ export default function TaskList({ tasks: propTasks }) {
             className="p-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md shadow-sm transition focus:ring-2 focus:ring-yellow-400"
             onClick={() => handleHoldTask(task)}
             title="Hold Task"
+            data-cy="hold-button"
           >
             <PauseCircle size={16} />
           </button>
@@ -216,6 +217,7 @@ export default function TaskList({ tasks: propTasks }) {
               className="p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-sm transition focus:ring-2 focus:ring-red-400"
               onClick={() => handleDeleteClick(task)}
               title="Delete Task"
+              data-cy="delete-task-button"
             >
               <Trash2 size={16} />
             </button>
@@ -369,6 +371,7 @@ export default function TaskList({ tasks: propTasks }) {
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 p-4"
           onClick={() => setIsDeleteModalOpen(false)}
+          data-cy="delete-confirmation-modal"
         >
           <div
             className="bg-white dark:bg-surface-dark p-6 rounded-lg shadow-lg w-11/12 max-w-sm"
@@ -384,12 +387,14 @@ export default function TaskList({ tasks: propTasks }) {
               <button
                 className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
                 onClick={() => setIsDeleteModalOpen(false)}
+                data-cy="cancel-delete-button"
               >
                 Cancel
               </button>
               <button
                 className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600"
                 onClick={handleConfirmDelete}
+                data-cy="confirm-delete-button"
               >
                 Delete
               </button>
