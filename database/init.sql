@@ -9,6 +9,15 @@ CREATE TABLE
         status_name VARCHAR(50) NOT NULL UNIQUE
     ) ENGINE = InnoDB;
 
+-- inserting default task statuses
+INSERT INTO
+    task_status (id, status_name)
+VALUES
+    (1, 'todo'),
+    (2, 'hold'),
+    (3, 'completed') ON DUPLICATE KEY
+UPDATE id = id;
+
 -- creating task table with status_id as foreign key
 CREATE TABLE
     IF NOT EXISTS task (
@@ -19,12 +28,3 @@ CREATE TABLE
         status_id INT NOT NULL DEFAULT 1,
         FOREIGN KEY (status_id) REFERENCES task_status (id) ON DELETE CASCADE
     ) ENGINE = InnoDB;
-
--- inserting default task statuses
-INSERT INTO
-    task_status (id, status_name)
-VALUES
-    (1, 'todo'),
-    (2, 'hold'),
-    (3, 'completed') ON DUPLICATE KEY
-UPDATE id = id;
