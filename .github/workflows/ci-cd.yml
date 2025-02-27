@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload backend test results
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: server/test-results/jest-test-report.xml
