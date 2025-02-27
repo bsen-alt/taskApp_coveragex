@@ -16,7 +16,7 @@ export default function Navbar() {
   }, [darkMode]);
 
   return (
-    <nav className="bg-black shadow-lg p-4 fixed top-0 w-full flex items-center justify-between px-6 md:px-10 font-inter">
+    <nav className="bg-black shadow-lg z-50 p-4 fixed top-0 w-full flex items-center justify-between px-6 md:px-10 font-inter">
       {/* Left */}
       <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-200">
         Task Manager

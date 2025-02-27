@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
 import { Toaster } from "sonner";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
           </Routes>
         </div>
+        <Footer />
       </Router>
     </QueryClientProvider>
   );

@@ -43,7 +43,7 @@ export default function Dashboard() {
     .slice(0, completedPage * 5);
 
   return (
-    <div className="lg:h-[calc(100vh-4rem)] xl:h-[calc(100vh-4rem)] overflow-hidden bg-background-light dark:bg-background-dark font-inter">
+    <div className="lg:h-[calc(100vh-6rem)] xl:h-[calc(100vh-6rem)] overflow-hidden bg-background-light dark:bg-background-dark font-inter">
       {/* Main dashboard layout */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:md:grid-cols-3 xl:grid-cols-3 h-full overflow-y-auto">
         {/* Column 1 - add task */}
