@@ -5,7 +5,6 @@ const API = axios.create({
 });
 
 export const getTasks = async (search = '') => {
-  console.log("Fetching Tasks with Search:", search); // Debugging log
   const response = await API.get('/', { params: { search } });
   return response.data;
 };
@@ -25,13 +24,11 @@ export const markTaskAsDone = async (id) => {
 };
 
 export const deleteTask = async (id) => {
-  console.log("Deleting task with ID:", id);  // Debugging log
   const response = await API.delete(`/${id}`);
   return response.data;
 };
 
 export const updateTaskStatus = async (id, status_id) => {
-  console.log("Holding/UnHolding task with ID:", id);  // Debugging log
   const response = await API.patch(`/${id}/status`, { status_id });
   return response.data;
 };

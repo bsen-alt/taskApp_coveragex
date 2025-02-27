@@ -8,10 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Use Task Routes
 app.use('/tasks', taskRoutes);
 
-// Initialize Swagger Documentation
+// Initialize swagger documentation
 swaggerDocs(app);
 
 const PORT = process.env.PORT || 5000;

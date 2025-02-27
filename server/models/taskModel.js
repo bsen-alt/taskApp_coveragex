@@ -31,6 +31,7 @@ const TaskModel = {
          JOIN task_status ON task.status_id = task_status.id
          ORDER BY created_at DESC`;
   
+         console.log('SQL Query:', query); //debugging log
     const [rows] = await pool.query(query, [`%${search}%`]);
     return rows;
   },
@@ -51,7 +52,6 @@ const TaskModel = {
   },
 
   async deleteTask(id) {
-    console.log(`🗑️ Deleting from DB, ID: ${id}`);
     const [result] = await pool.query(
       'DELETE FROM task WHERE id = ? AND status_id IN (1, 2)', // Only To-Do and Hold tasks
       [id]
@@ -61,7 +61,6 @@ const TaskModel = {
       throw new Error(`Task ID ${id} not found or cannot be deleted`);
     }
   
-    console.log(`✅ Task with ID ${id} deleted`);
     return { message: 'Task deleted' };
   },
   

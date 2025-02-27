@@ -11,7 +11,7 @@ export default {
         'inter': ["Inter", "serif"],
       },
       colors: {
-        // Light Mode Colors
+        // Light mode colors
         'primary-light': '#FF6F00', 
         'secondary-light': '#FFC107', 
         'background-light': '#F9F9F9',
@@ -23,7 +23,7 @@ export default {
         'primary-button-light': '#FF6F00',
         'secondary-button-light': '#4CAF50',
 
-        // Dark Mode Colors
+        // Dark mode colors
         'primary-dark': '#FF6F00',
         'secondary-dark': '#FFC107',
         'background-dark': '#121212',
@@ -35,7 +35,7 @@ export default {
         'primary-button-dark': '#FF6F00',
         'secondary-button-dark': '#4CAF50',
 
-        // Hold & Completed Task Background Colors
+        // Hold & completed task background colors
         'hold-task-light': '#F4E1A1',
         'completed-task-light': '#B9E6B6',
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getTasks,
@@ -10,9 +10,13 @@ import {
 import { format } from "date-fns";
 import { CheckCircle, PauseCircle, Undo2, Edit, Trash2 } from "lucide-react";
 import SkeletonTask from "./SkeletonTask";
+import { toast } from "sonner";
 
 export default function TaskList({ tasks: propTasks }) {
   const queryClient = useQueryClient();
+
+  const searchTimeoutRef = useRef(null);
+
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -24,17 +28,29 @@ export default function TaskList({ tasks: propTasks }) {
   const [taskToDelete, setTaskToDelete] = useState(null);
 
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 400);
-    return () => clearTimeout(handler);
+    if (search === debouncedSearch) return;
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(searchTimeoutRef.current);
+    };
   }, [search]);
 
   const { data: fetchedTasks, isLoading } = useQuery({
     queryKey: ["tasks", debouncedSearch],
     queryFn: () => getTasks(debouncedSearch),
     keepPreviousData: true,
+    enabled: debouncedSearch.length > 0,
   });
 
-  const tasksToRender = propTasks || fetchedTasks;
+  const tasksToRender = fetchedTasks?.length > 0 ? fetchedTasks : propTasks;
 
   const doneMutation = useMutation({
     mutationFn: markTaskAsDone,
@@ -49,12 +65,11 @@ export default function TaskList({ tasks: propTasks }) {
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteTask(id),
     onSuccess: (_, id) => {
-      console.log("Attempting deletion and mutation success:", id);
       queryClient.invalidateQueries(["tasks"]);
-      console.log("Task deleted successfully");
+      toast.success("Task successfully deleted");
     },
     onError: (error, id) => {
-      console.error("❌ Error deleting task:", id, error);
+      toast.error("Error deleting task");
     },
   });
 
@@ -62,29 +77,30 @@ export default function TaskList({ tasks: propTasks }) {
     mutationFn: (task) => updateTask(task.id, task),
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
-      setIsEditModalOpen(false); // Close modal after successful update
+      setIsEditModalOpen(false);
+      toast.success("Task successfully updated");
     },
   });
 
   const holdTaskMutation = useMutation({
-    mutationFn: (id) => updateTaskStatus(id, 2), // 2 = Hold status
+    mutationFn: (id) => updateTaskStatus(id, 2), // 2 = hold status
     onSuccess: (data) => {
-      console.log("Task held successfully:", data);
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task successfully moved in to 'On Hold'.");
     },
     onError: (error) => {
-      console.error("Error holding task:", error);
+      toast.error("Error holding task");
     },
   });
 
   const unholdTaskMutation = useMutation({
-    mutationFn: (id) => updateTaskStatus(id, 1), // 1 = To-Do status
+    mutationFn: (id) => updateTaskStatus(id, 1), // 1 = to-do status
     onSuccess: (data) => {
-      console.log("Task unheld successfully:", data);
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task successfully moved out of 'On Hold'.");
     },
     onError: (error) => {
-      console.error("Error unholding task:", error);
+      toast.error("Error unholding task");
     },
   });
 
@@ -97,7 +113,7 @@ export default function TaskList({ tasks: propTasks }) {
 
   const handleUpdateTask = () => {
     if (!updatedTitle || !updatedDescription) {
-      alert("Title and Description are required.");
+      toast.warning("Title and Description are required");
       return;
     }
 
@@ -105,23 +121,16 @@ export default function TaskList({ tasks: propTasks }) {
       ...selectedTask,
       title: updatedTitle,
       description: updatedDescription,
-      updated_at: new Date().toISOString(), // Update timestamp to current date and time
+      updated_at: new Date().toISOString(),
     };
 
-    // Call the mutation to update the task
+    // call the mutation to update the task
     updateTaskMutation.mutate(updatedTask);
   };
 
   const handleDeleteClick = (task) => {
     setTaskToDelete(task);
     setIsDeleteModalOpen(true);
-  };
-
-  const handleDelete = (id) => {
-    console.log("Attempting to delete task with ID:", id); // Log the task ID
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      deleteMutation.mutate(id);
-    }
   };
 
   const handleConfirmDelete = () => {
@@ -136,27 +145,25 @@ export default function TaskList({ tasks: propTasks }) {
   };
 
   const handleHoldTask = (task) => {
-    console.log("Hold Task clicked", task); // Log the full task object
     if (task.id) {
-      holdTaskMutation.mutate(task.id); // Trigger mutation for holding the task
+      holdTaskMutation.mutate(task.id); // trigger mutation for holding the task
     } else {
-      console.error("Task ID is missing!");
+      toast.error("Task ID is missing! Unable to hold.");
     }
   };
 
   const handleUnholdTask = (task) => {
-    console.log("Unhold Task clicked", task); // Log the full task object
     if (task.id) {
-      unholdTaskMutation.mutate(task.id); // Trigger mutation for unholding the task
+      unholdTaskMutation.mutate(task.id); // trigger mutation for unholding the task
     } else {
-      console.error("Task ID is missing!");
+      toast.error("Task ID is missing! Unable to unhold.");
     }
   };
 
   useEffect(() => {
     let delay;
     if (!isLoading) {
-      delay = setTimeout(() => setShowResults(true), 400);
+      delay = setTimeout(() => setShowResults(true), 300);
     } else {
       setShowResults(false);
     }
@@ -230,7 +237,7 @@ export default function TaskList({ tasks: propTasks }) {
             : "bg-background-light dark:bg-surface-dark"
         }`}
       >
-        {/* Task Details */}
+        {/* Task details */}
         <div className="flex-1 w-full">
           <h3
             className={`text-sm font-semibold text-text-primary-light dark:text-text-primary-dark truncate ${
@@ -262,7 +269,7 @@ export default function TaskList({ tasks: propTasks }) {
           </p>
         </div>
 
-        {/* Task Action Buttons */}
+        {/* Task action buttons */}
         <div className="flex flex-wrap items-center justify-end lg:justify-start space-x-2 w-full md:w-auto">
           {renderTaskActionButtons(task)}
         </div>
@@ -272,16 +279,7 @@ export default function TaskList({ tasks: propTasks }) {
 
   return (
     <div className="p-4 w-full max-w-lg md:max-w-2xl lg:max-w-4xl h-fit mx-auto rounded-lg">
-      {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search tasks..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-surface-dark text-secondary-light dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-      />
-
-      {/* Show Skeleton While Loading */}
+      {/* Show skeleton while loading */}
       {isLoading ? (
         <div className="mt-4 space-y-3">
           <SkeletonTask />
@@ -300,7 +298,7 @@ export default function TaskList({ tasks: propTasks }) {
         </div>
       )}
 
-      {/* Edit Task Modal */}
+      {/* Edit task modal */}
       {isEditModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center p-4"
@@ -314,7 +312,7 @@ export default function TaskList({ tasks: propTasks }) {
               Edit Task
             </h3>
 
-            {/* Title Input */}
+            {/* Title input */}
             <div>
               <label
                 htmlFor="title"
@@ -331,7 +329,7 @@ export default function TaskList({ tasks: propTasks }) {
               />
             </div>
 
-            {/* Description Textarea */}
+            {/* Description textarea */}
             <div className="mt-4">
               <label
                 htmlFor="description"
@@ -347,7 +345,7 @@ export default function TaskList({ tasks: propTasks }) {
               />
             </div>
 
-            {/* Action Buttons */}
+            {/* Action buttons */}
             <div className="mt-4 flex justify-end space-x-3">
               <button
                 onClick={() => setIsEditModalOpen(false)}
@@ -366,7 +364,7 @@ export default function TaskList({ tasks: propTasks }) {
         </div>
       )}
 
-      {/* Delete Task Modal */}
+      {/* Delete task modal */}
       {isDeleteModalOpen && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 p-4"

@@ -22,7 +22,7 @@ const TaskController = {
   async getTasks(req, res) {
     try {
       const { search } = req.query;
-      console.log("🔍 Search Query Received:", search); // Debugging log
+      console.log('Received search query:', search); //debugging log
       const tasks = await TaskModel.getTasks(search);
       res.json(tasks);
     } catch (error) {
@@ -53,19 +53,15 @@ const TaskController = {
   async deleteTask(req, res) {
     try {
       const { id } = req.params;
-      console.log(`🗑️ Delete request received for task ID: ${id}`);
   
       const task = await TaskModel.getTaskById(id);
       if (!task) {
-        console.log(`❌ Task with ID ${id} not found`);
         return res.status(404).json({ error: 'Task not found' });
       }
   
       await TaskModel.deleteTask(id);
-      console.log(`✅ Task with ID ${id} deleted successfully`);
       res.json({ message: 'Task deleted' });
     } catch (error) {
-      console.error('🔥 Error in deleteTask:', error);
       res.status(500).json({ error: 'Server error' });
     }
   },
@@ -74,19 +70,15 @@ const TaskController = {
     try {
       const { id } = req.params;
       const { status_id } = req.body;
-      console.log(`Received update request for task ID: ${id}, Status ID: ${status_id}`);
 
       if (!id) {
-        console.error("Error: ID is undefined");
         return res.status(400).json({ error: "Task ID is missing" });
       }
 
       await TaskModel.updateTaskStatus(id, status_id);
-      console.log(`✅ Task with ID ${id} STATUS CHANGED successfully`);
       res.json({ message: "Task status updated successfully" });
 
     } catch (error) {
-      console.error('Error in updateTaskStatus:', error);
       res.status(500).json({ error: 'Server error' });
     }
   }

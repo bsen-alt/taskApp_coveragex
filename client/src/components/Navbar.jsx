@@ -17,17 +17,17 @@ export default function Navbar() {
 
   return (
     <nav className="bg-black shadow-lg p-4 fixed top-0 w-full flex items-center justify-between px-6 md:px-10 font-inter">
-      {/* Left - Logo */}
+      {/* Left */}
       <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-200">
         Task Manager
       </h1>
 
-      {/* Center - Project Name (Hidden on Small Screens) */}
+      {/* Center - hidden on small screens) */}
       <p className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 text-gray-200">
         Assessment Project - CoverageX
       </p>
 
-      {/* Right - Dark Mode Toggle */}
+      {/* Right - dark mode toggle */}
       <button
         onClick={() => setDarkMode(!darkMode)}
         className="p-2 rounded-lg bg-surface-dark border border-border-dark hover:bg-background-dark transition focus:outline-none"
