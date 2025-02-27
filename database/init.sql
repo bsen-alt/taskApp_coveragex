@@ -22,8 +22,9 @@ CREATE TABLE
 
 -- inserting default task statuses
 INSERT INTO
-    task_status (status_name)
+    task_status (id, status_name)
 VALUES
-    ('todo'),
-    ('hold'),
-    ('completed');
+    (1, 'todo'),
+    (2, 'hold'),
+    (3, 'completed') ON DUPLICATE KEY
+UPDATE id = id;
