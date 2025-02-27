@@ -22,7 +22,6 @@ const TaskController = {
   async getTasks(req, res) {
     try {
       const { search } = req.query;
-      console.log('Received search query:', search); //debugging log
       const tasks = await TaskModel.getTasks(search);
       res.json(tasks);
     } catch (error) {

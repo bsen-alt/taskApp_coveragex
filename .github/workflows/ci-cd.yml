@@ -32,17 +32,24 @@ jobs:
       - name: Run frontend tests
         run: |
           cd client
-          npm test || true  # Skip if no tests
+          npm test || true
 
       - name: Run backend tests
         run: |
           cd server
-          npm test || true  # Skip if no tests
+          npm test || true
+
+      - name: Upload backend test results
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-test-results
+          path: server/test-results/jest-test-report.xml
 
       - name: Build client app
         run: |
           cd client
-          npm run build || true  # Only build frontend if required
+          npm run build || true  # only build frontend if required
 
       # - name: Deploy backend
       #   run: |

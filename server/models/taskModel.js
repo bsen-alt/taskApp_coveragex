@@ -30,8 +30,6 @@ const TaskModel = {
          FROM task
          JOIN task_status ON task.status_id = task_status.id
          ORDER BY created_at DESC`;
-  
-         console.log('SQL Query:', query); //debugging log
     const [rows] = await pool.query(query, [`%${search}%`]);
     return rows;
   },
@@ -45,7 +43,7 @@ const TaskModel = {
   
   async updateTask(id, title, description) {
     await pool.query(
-      'UPDATE task SET title = ?, description = ? WHERE id = ? AND status_id IN (1, 2)', // 1 is To-Do, 2 is Hold
+      'UPDATE task SET title = ?, description = ? WHERE id = ? AND status_id IN (1, 2)', // 1 for todo, 2 for hold
       [title, description, id]
     );
     return { message: 'Task updated' };
@@ -53,7 +51,7 @@ const TaskModel = {
 
   async deleteTask(id) {
     const [result] = await pool.query(
-      'DELETE FROM task WHERE id = ? AND status_id IN (1, 2)', // Only To-Do and Hold tasks
+      'DELETE FROM task WHERE id = ? AND status_id IN (1, 2)', // only todo and hold tasks
       [id]
     );
   
@@ -71,12 +69,6 @@ const TaskModel = {
     );
     return { message: 'Task status updated successfully' };
   },
-  
-  // async unHoldTask(id) {
-  //   await pool.query('UPDATE task SET status_id = 1 WHERE id = ? AND status_id = 2', [id]); // 1 is To-Do, 2 is Hold
-  //   return { message: 'Task unheld and moved to To-Do' };
-  // }
-
 };
 
 module.exports = TaskModel;

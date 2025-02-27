@@ -34,5 +34,15 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "vite": "^6.1.0"
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      ["jest-junit", {
+        "outputDirectory": "./test-results",
+        "outputName": "jest-test-report.xml"
+      }]
+    ]
   }
+
 }
