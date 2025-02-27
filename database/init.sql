@@ -16,7 +16,7 @@ CREATE TABLE
         title VARCHAR(255) NOT NULL,
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        status_id INT NOT NULL,
+        status_id INT NOT NULL DEFAULT 1,
         FOREIGN KEY (status_id) REFERENCES task_status (id) ON DELETE CASCADE
     ) ENGINE = InnoDB;
 
