@@ -16,6 +16,7 @@ const TaskController = {
       const task = await TaskModel.createTask(validatedData.title, validatedData.description, statusId);
       res.status(201).json(task);
     } catch (error) {
+      console.error("Validation error:", error);
       res.status(400).json({ error: error.message });
     }
   },
